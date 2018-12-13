@@ -10,9 +10,8 @@ Sensor_ids = {0x0: Initial Burst,
               0x5: Humidity, 
               0xE: Luminosity} 
               
-
 Padding = 0xEE
-
+CRC = Sum of all the ones in the first two bytes of the initial burst and the 3 sensor bursts. 
 ## Packet Structure
 
 Initial_burst     = [ [node_id, sensor_id] [node_id, sensor_id] [Padding] [CRC] ]  ---> 32 bits = 4 Bytes
@@ -37,3 +36,13 @@ To get the temperature from this burst, one must do:
     1. Get integer part and substract 20:   0x1E = 30 --> 30 - 20 = 10
     2. Get decimal part, divide it by 1000 (to get decimals) and add it to the integer part: 0x0199 = 409 --> 409/1000 = 0.409 
     3. Add it to the integer part to recover the original temperature: 10.409 (as we need a resolution of 0.5 we are safe)
+    
+### Pressure
+For a pressure in the node B of float press = 109999.2 Pa we will have a Pressure Burst of: [ [0xBA] [0xFF] [0xD6] [0xD7] ]
+
+To get the pressure from this burst, one must do:
+    1. Get integer part: 0xD6D7 = 54999 
+    2. Multiply it by 2: 54999 * 2 = 109998
+    3. If ODD_EVEN == 0xFF, add 1 to the number, otherwise left as it is. In this case we must add 1, resulting in: 109998+1 = 109999
+
+
