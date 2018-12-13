@@ -67,8 +67,8 @@ void loop() {
   
   //This is the sequence over which we'll compute the CRC
   byte sequence[SEQ_LEN_NO_CRC];
-  byte initseq0 = 0xa0;
-  byte initseq1 = 0xa0;
+  byte initseq0 = 0xb0;
+  byte initseq1 = 0xb0;
   sequence[0] = initseq0;
   sequence[1] = initseq1;
   
@@ -79,7 +79,7 @@ void loop() {
   float tempera = readings_from_sensors[0];
 
   //TEMPERATURE: fornode A temp_init_seq is 0xaf, for node B is 0xbf
-  byte temp_init_seq = 0xaf;
+  byte temp_init_seq = 0xbf;
   //Doing this we send just positive numbers but in reception we know that we have to substract 20 again
   float tempera_added_20 = tempera + 20.0;
   int tempera_int = (int) tempera_added_20;
@@ -106,7 +106,7 @@ void loop() {
   */
   float pressure = readings_from_sensors[1];
   //For node A
-  byte pressure_init_seq = 0xaa; //Node b = 0xba
+  byte pressure_init_seq = 0xba; //Node b = 0xba
   byte es_par;
   unsigned int part_entera = (unsigned int) (pressure/2);
   if((part_entera%2) == 0){
@@ -137,7 +137,7 @@ void loop() {
   */
   float humidity = readings_from_sensors[1];
   //For node A
-  byte humidity_init_seq = 0xa5; //node B = 0xb5
+  byte humidity_init_seq = 0xb5; //node B = 0xb5
   int humidity_int = (int) humidity;
   //This byte below will be send as integer_part (it fits in a byte as it is from 20 to 90)
   byte humidity_byte = (byte) humidity_int;
@@ -167,7 +167,7 @@ void loop() {
   first.myByte[3] = initseq0;
   first.myByte[2] = initseq1;
   first.myByte[0] = crc;
-  first.myByte[1] = 0x00; //Padding
+  first.myByte[1] = 0xee; //Padding has to be non zero because otherwise
   Serial.println(crc, HEX);
   //Send all the sequences
   Serial.println(first.myLong, HEX);

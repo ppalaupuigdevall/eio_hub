@@ -75,10 +75,10 @@ void loop() {
       burst rcv_burst;
       rcv_burst.myLong = valor_rebut;
       
-      first_bytes_rcv[3] = rcv_burst.myByte[0]; //initseq0
-      first_bytes_rcv[2] = rcv_burst.myByte[1]; //initseq1
-      first_bytes_rcv[0] = rcv_burst.myByte[2]; //crc
-      first_bytes_rcv[1] = rcv_burst.myByte[3]; //padding
+      first_bytes_rcv[3] = rcv_burst.myByte[0]; //crc
+      first_bytes_rcv[2] = rcv_burst.myByte[1]; //padding
+      first_bytes_rcv[1] = rcv_burst.myByte[2]; //initseq1
+      first_bytes_rcv[0] = rcv_burst.myByte[3]; //initseq0
 
       Serial.print(first_bytes_rcv[0], HEX);
       Serial.print(first_bytes_rcv[1], HEX);
@@ -89,22 +89,22 @@ void loop() {
         sequence[i+j] = first_bytes_rcv[i];
       }
   
-      if( first_bytes_rcv[3]== 0xa0 && first_bytes_rcv[2] == 0xa0){
+      if( first_bytes_rcv[0]== 0xa0 && first_bytes_rcv[1] == 0xa0){
         Serial.println("Rebo del node A");
         //Update the sequence index
-        crc = first_bytes_rcv[1];
+        crc = first_bytes_rcv[3];
         j = j + 4;
-      }else if(first_bytes_rcv[3] == 0xb0 && first_bytes_rcv[2] == 0xb0){
+      }else if(first_bytes_rcv[0] == 0xb0 && first_bytes_rcv[1] == 0xb0){
         Serial.println("Rebo del node B");
         //Update the sequence index
-        crc = first_bytes_rcv[1];
+        crc = first_bytes_rcv[3];
         j = j + 4;
       }else{
         //The received signal is nothing known by the receiver
         end_of_seq = true;
       }
-      if(first_bytes_rcv[2]== 0xaf || first_bytes_rcv[2]== 0xa5 || first_bytes_rcv[2]== 0xaa){
-        j = j +4;
+      if(first_bytes_rcv[0]== 0xaf || first_bytes_rcv[0]== 0xa5 || first_bytes_rcv[0]== 0xaa ||first_bytes_rcv[0]== 0xbf || first_bytes_rcv[0]== 0xb5 || first_bytes_rcv[0]== 0xba){
+        j = j + 4;
       }
       if(j == 16){
         //Aixo vol dir que he rebut tota la sequencia (15 Bytes), ara ja puc fer els calculs que toquin: 1 - calcular crc i en cas que sigui OK treure info de sensors i enviar-la a josep
@@ -113,7 +113,7 @@ void loop() {
           sequence_to_compute_crc[k] = sequence[k];
         }
         
-        for(byte k = 2; k < SEQ_LEN_NO_CRC - 2; k++){
+        for(byte k = 2; k < SEQ_LEN_NO_CRC; k++){
           sequence_to_compute_crc[k] = sequence[k + 2];
         }
         byte computed_crc = compute_array_CRC(sequence_to_compute_crc);
