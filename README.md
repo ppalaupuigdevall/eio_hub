@@ -1,5 +1,5 @@
 # HUB EIO
-This project consist in sending different sensor measurements through an IR link using library IRremote for arduino.
+This project consists in sending different sensor measurements through an IR link using the library IRremote for arduino.
 ## Fields
 
 Node_ids = {A, B} (Hexadecimal)
@@ -35,4 +35,5 @@ For a temperature in the node B of float temp = 10.41 we will have a Temperature
 
 To get the temperature from this burst, one must do:
     1. Get integer part and substract 20:   0x1E = 30 --> 30 - 20 = 10
-    2. Get decimal part, divide it by 1000 (to get decimals) and add it to the integer part:  
+    2. Get decimal part, divide it by 1000 (to get decimals) and add it to the integer part: 0x0199 = 409 --> 409/1000 = 0.409 
+    3. Add it to the integer part to recover the original temperature: 10.409 (as we need a resolution of 0.5 we are safe)
