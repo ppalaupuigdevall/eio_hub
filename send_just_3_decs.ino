@@ -48,7 +48,7 @@ byte compute_CRC(byte b){
 byte compute_array_CRC(byte *arr){
   byte count = 0;
   byte len = sizeof(arr);
-  Serial.println(len, DEC);
+  
   for(byte i = 0; i <SEQ_LEN_NO_CRC; i++){
     count = count + compute_CRC(arr[i]);
   }
@@ -152,6 +152,7 @@ void loop() {
   humidity_burst.myByte[2] = humidity_byte;
   humidity_burst.myByte[1] = converter_humidity.byte_array[0];
   humidity_burst.myByte[0] = converter_humidity.byte_array[1];
+  
   for(byte i=0; i<4; i++){
     sequence[i + 8 + 2] = humidity_burst.myByte[i];
   }
@@ -165,19 +166,19 @@ void loop() {
   //[3,2,1,0]
   first.myByte[3] = initseq0;
   first.myByte[2] = initseq1;
-  first.myByte[1] = crc;
-  first.myByte[0] = 0x00; //Padding
-  Serial.println(first.myByte[2]);
+  first.myByte[0] = crc;
+  first.myByte[1] = 0x00; //Padding
+  Serial.println(crc, HEX);
   //Send all the sequences
   Serial.println(first.myLong, HEX);
   irsend.sendNEC(first.myLong, 32);
-  delay(100);
+  delay(300);
   Serial.println(temp_burst.myLong, HEX);
   irsend.sendNEC(temp_burst.myLong, 32);
-  delay(100);
+  delay(300);
   Serial.println(press_bin.myLong, HEX);
   irsend.sendNEC(press_bin.myLong, 32);
-  delay(100);
+  delay(300);
   Serial.println(humidity_burst.myLong, HEX);
   irsend.sendNEC(humidity_burst.myLong, 32);
   delay(500);

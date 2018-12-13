@@ -66,6 +66,7 @@ void loop() {
   bool end_of_seq = false;
   bool incorrect_crc = false;
   byte j = 0;
+  
   while(!end_of_seq || !incorrect_crc){
    
     if(irrecv.decode(&results)){
@@ -76,29 +77,35 @@ void loop() {
       
       first_bytes_rcv[3] = rcv_burst.myByte[0]; //initseq0
       first_bytes_rcv[2] = rcv_burst.myByte[1]; //initseq1
-      first_bytes_rcv[1] = rcv_burst.myByte[2]; //crc
-      first_bytes_rcv[0] = rcv_burst.myByte[3]; //padding
-      Serial.println(first_bytes_rcv[0], HEX);
-      Serial.println(first_bytes_rcv[1], HEX);
-      Serial.println(first_bytes_rcv[2], HEX);
-      Serial.println(first_bytes_rcv[3], HEX);
+      first_bytes_rcv[0] = rcv_burst.myByte[2]; //crc
+      first_bytes_rcv[1] = rcv_burst.myByte[3]; //padding
+
+      Serial.print(first_bytes_rcv[0], HEX);
+      Serial.print(first_bytes_rcv[1], HEX);
+      Serial.print(first_bytes_rcv[2], HEX);
+      Serial.print(first_bytes_rcv[3], HEX);
+      Serial.println("");
       for(byte i=0; i<4; i++){
         sequence[i+j] = first_bytes_rcv[i];
       }
   
-      if(sequence[0] == 0xa0 && sequence[1] == 0xa0){
+      if( first_bytes_rcv[3]== 0xa0 && first_bytes_rcv[2] == 0xa0){
         Serial.println("Rebo del node A");
         //Update the sequence index
+        crc = first_bytes_rcv[1];
         j = j + 4;
-      }else if(sequence[0] == 0xb0 && sequence[1] == 0xb0){
+      }else if(first_bytes_rcv[3] == 0xb0 && first_bytes_rcv[2] == 0xb0){
         Serial.println("Rebo del node B");
         //Update the sequence index
+        crc = first_bytes_rcv[1];
         j = j + 4;
       }else{
         //The received signal is nothing known by the receiver
         end_of_seq = true;
       }
-      
+      if(first_bytes_rcv[2]== 0xaf || first_bytes_rcv[2]== 0xa5 || first_bytes_rcv[2]== 0xaa){
+        j = j +4;
+      }
       if(j == 16){
         //Aixo vol dir que he rebut tota la sequencia (15 Bytes), ara ja puc fer els calculs que toquin: 1 - calcular crc i en cas que sigui OK treure info de sensors i enviar-la a josep
         Serial.println("He rebut 4 paquets!!");
@@ -110,23 +117,26 @@ void loop() {
           sequence_to_compute_crc[k] = sequence[k + 2];
         }
         byte computed_crc = compute_array_CRC(sequence_to_compute_crc);
+        Serial.println("CRC rebut");
         Serial.println(crc, HEX);
+        Serial.println("CRC Calculat");
         Serial.println(computed_crc, HEX);
         if(computed_crc == crc){
-          Serial.println("CRC OK!, treure info i enviar a josep");
+          Serial.println("CRC OK!");
         }else{
-          Serial.println("CRC NOT OK! (-_-)");
+          Serial.println("CRC NOT OK!");
         }
         //Passi el que passi a dalt hem de sortir del while i seguir llegint
         end_of_seq = true;
-        
+        j = 0;
       }
+
       
    //Receive next packet
     irrecv.resume();
-    delay(10);
+    delay(100);
     }
      
   }
-delay(10);
+delay(50);
 }
