@@ -93,8 +93,8 @@ void loop() {
   burst temp_burst;
   temp_burst.myByte[3] = temp_init_seq;
   temp_burst.myByte[2] = tempera_byte;
-  temp_burst.myByte[1] = converter.byte_array[0];
-  temp_burst.myByte[0] = converter.byte_array[1];
+  temp_burst.myByte[1] = converter.byte_array[1];
+  temp_burst.myByte[0] = converter.byte_array[0];
   for(byte i=0; i<4; i++){
     sequence[i+2] = temp_burst.myByte[i];
   }
@@ -123,8 +123,8 @@ void loop() {
   burst press_bin;
   press_bin.myByte[3] = pressure_init_seq;
   press_bin.myByte[2] = es_par;
-  press_bin.myByte[1] = pressure_2_bytes.byte_array[0];
-  press_bin.myByte[0] = pressure_2_bytes.byte_array[1];
+  press_bin.myByte[1] = pressure_2_bytes.byte_array[1];
+  press_bin.myByte[0] = pressure_2_bytes.byte_array[0];
 
   for(byte i=0; i<4; i++){
     sequence[i + 4 + 2] = press_bin.myByte[i];
@@ -150,8 +150,8 @@ void loop() {
   burst humidity_burst;
   humidity_burst.myByte[3] = humidity_init_seq;
   humidity_burst.myByte[2] = humidity_byte;
-  humidity_burst.myByte[1] = converter_humidity.byte_array[0];
-  humidity_burst.myByte[0] = converter_humidity.byte_array[1];
+  humidity_burst.myByte[1] = converter_humidity.byte_array[1];
+  humidity_burst.myByte[0] = converter_humidity.byte_array[0];
   
   for(byte i=0; i<4; i++){
     sequence[i + 8 + 2] = humidity_burst.myByte[i];
