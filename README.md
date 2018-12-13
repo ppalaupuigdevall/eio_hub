@@ -33,6 +33,7 @@ Luminosity Burst  = [ [node_id, sensor_id] [ODD_EVEN] [integer_part_dividedby2_1
 For a temperature in the node B of float temp = 10.41 we will have a Temperature Burst of: [ [0xBF] [0x1E] [0x01] [0x99] ] 
 
 To get the temperature from this burst, one must do:
+    
     1. Get integer part and substract 20:   0x1E = 30 --> 30 - 20 = 10
     2. Get decimal part, divide it by 1000 (to get decimals) and add it to the integer part: 0x0199 = 409 --> 409/1000 = 0.409 
     3. Add it to the integer part to recover the original temperature: 10.409 (as we need a resolution of 0.5 we are safe)
@@ -41,6 +42,7 @@ To get the temperature from this burst, one must do:
 For a pressure in the node B of float press = 109999.2 Pa we will have a Pressure Burst of: [ [0xBA] [0xFF] [0xD6] [0xD7] ]
 
 To get the pressure from this burst, one must do:
+    
     1. Get integer part: 0xD6D7 = 54999 
     2. Multiply it by 2: 54999 * 2 = 109998
     3. If ODD_EVEN == 0xFF, add 1 to the number, otherwise left as it is. In this case we must add 1, resulting in: 109998+1 = 109999
