@@ -30,6 +30,9 @@ Luminosity Burst  = [ [node_id, sensor_id] [ODD_EVEN] [integer_part_dividedby2_1
 
 ## Burst Examples
 
-For a temperature in the node B of float temp = 10.41 we will have a Temperature Burst of: [ [0xBF] [0x1E] [0x99] [0x01] ] 
+### Temperature
+For a temperature in the node B of float temp = 10.41 we will have a Temperature Burst of: [ [0xBF] [0x1E] [0x01] [0x99] ] 
 
 To get the temperature from this burst, one must do:
+    1. Get integer part and substract 20:   0x1E = 30 --> 30 - 20 = 10
+    2. Get decimal part, divide it by 1000 (to get decimals) and add it to the integer part:  
