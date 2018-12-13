@@ -1,5 +1,8 @@
 # HUB EIO
 This project consists in sending different sensor measurements through an IR link using the library IRremote for arduino.
+
+Project members: M.Mas, P.Palau, A.Scherk, J.Torné
+
 ## Fields
 
 Node_ids = {A, B} (Hexadecimal)
